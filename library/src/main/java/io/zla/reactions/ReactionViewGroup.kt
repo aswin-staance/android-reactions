@@ -127,10 +127,10 @@ class ReactionViewGroup(context: Context, private val config: ReactionsConfig) :
             dialogX = Math.max(0, (width - dialogWidth) / 2)
         }
         // Y position will be slightly on top of parent view
-        dialogY = parentLocation.y - dialogHeight * 2
+        dialogY = firstClick.y - 400
         if (dialogY < 0) {
             // Below parent view
-            dialogY = parentLocation.y + parentSize.second + dialogHeight
+            dialogY = firstClick.y + 100
         }
     }
 
@@ -176,8 +176,8 @@ class ReactionViewGroup(context: Context, private val config: ReactionsConfig) :
                 .also(parent::getLocationOnScreen)
                 .let { Point(it[0], it[1]) }
         parentSize = parent.width to parent.height
-        isFirstTouchAlwaysInsideButton = true
-        isIgnoringFirstReaction = true
+        isFirstTouchAlwaysInsideButton = false
+        isIgnoringFirstReaction = false
 
         // Resize, could be fixed with later resolved width/height
         onSizeChanged(width, height, width, height)
@@ -193,22 +193,29 @@ class ReactionViewGroup(context: Context, private val config: ReactionsConfig) :
         when (event.action) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                 // Track first moves of the first click, avoiding to auto-select first reaction
+                Log.e(tag, ""+ event.action + " " + isIgnoringFirstReaction)
                 if (isIgnoringFirstReaction) {
                     val v = reactions.first()
                     val isBelowFirstReaction = event.rawX >= v.x && event.rawX <= v.right &&
                             event.rawY >= v.y + v.height && event.rawY <= v.y + v.height + dialogHeight
                     isIgnoringFirstReaction = isIgnoringFirstReaction &&
                             (isBelowFirstReaction || isFirstTouchAlwaysInsideButton)
+                    Log.e(tag, "ignoringFirstReaction "+ isIgnoringFirstReaction + " "+ isBelowFirstReaction + " "+ isFirstTouchAlwaysInsideButton)
                     if (isIgnoringFirstReaction) return true
                 }
 
                 // Ignores when appearing
-                if (currentState is ReactionViewState.Boundary.Appear) return true
+                if (currentState is ReactionViewState.Boundary.Appear){
+                    Log.e(tag, "current state appear")
+                    return true
+                }
 
                 val view = getIntersectedIcon(event.rawX, event.rawY)
                 if (view == null) {
+                    Log.e(tag, "current state waiting for selection")
                     currentState = ReactionViewState.WaitingSelection
                 } else if ((currentState as? ReactionViewState.Selected)?.view != view) {
+                    Log.e(tag, "current state selected")
                     currentState = ReactionViewState.Selected(view)
                 }
             }
@@ -346,7 +353,7 @@ class ReactionViewGroup(context: Context, private val config: ReactionsConfig) :
                             val index = state?.view ?: return
                             reactionText.text =
                                     config.reactionTextProvider(reactions.indexOf(index))
-                                    ?: return
+                                            ?: return
                             reactionText.visibility = View.VISIBLE
                             requestLayout()
                         }

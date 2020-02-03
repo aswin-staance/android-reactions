@@ -29,8 +29,8 @@ class ReactionPopup @JvmOverloads constructor(
         // Lazily inflate content during first display
         ReactionViewGroup(context, reactionsConfig).also {
             it.layoutParams = FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT,
                     Gravity.CENTER)
 
             it.reactionSelectedListener = reactionSelectedListener
@@ -44,7 +44,7 @@ class ReactionPopup @JvmOverloads constructor(
         width = ViewGroup.LayoutParams.MATCH_PARENT
         height = ViewGroup.LayoutParams.MATCH_PARENT
         isFocusable = true
-        setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        setBackgroundDrawable(ColorDrawable(Color.parseColor("#90000000")))
     }
 
     @SuppressLint("ClickableViewAccessibility")

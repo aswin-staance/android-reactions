@@ -176,7 +176,7 @@ class ReactionViewGroup(context: Context, private val config: ReactionsConfig) :
                 .also(parent::getLocationOnScreen)
                 .let { Point(it[0], it[1]) }
         parentSize = parent.width to parent.height
-        isFirstTouchAlwaysInsideButton = false
+        isFirstTouchAlwaysInsideButton = true
         isIgnoringFirstReaction = false
 
         // Resize, could be fixed with later resolved width/height

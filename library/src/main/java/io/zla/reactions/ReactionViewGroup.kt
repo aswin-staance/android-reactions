@@ -221,7 +221,7 @@ class ReactionViewGroup(context: Context, private val config: ReactionsConfig) :
             }
             MotionEvent.ACTION_UP -> {
                 // Ignores it if first move was always inside parent view
-                if (isFirstTouchAlwaysInsideButton) {
+                if (isFirstTouchAlwaysInsideButton && currentState !is ReactionViewState.Selected) {
                     isFirstTouchAlwaysInsideButton = false
                     return true
                 }

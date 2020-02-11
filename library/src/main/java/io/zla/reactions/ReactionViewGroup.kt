@@ -41,16 +41,21 @@ class ReactionViewGroup(context: Context, private val config: ReactionsConfig) :
 
     init {
         val nIcons = config.reactions.size
+        val dividerCount = if (config.reactions.size == 1) {
+            1
+        } else {
+            config.reactions.size - 1
+        }
 
         dialogWidth = horizontalPadding * 2 +
                 mediumIconSize * nIcons +
-                iconDivider * nIcons.minus(1)
+                iconDivider * dividerCount
 
         smallIconSize = (dialogWidth
                 - horizontalPadding * 2
                 - largeIconSize
-                - iconDivider * nIcons.minus(1)
-                ) / nIcons.minus(1)
+                - iconDivider * dividerCount
+                ) / dividerCount
     }
 
     private val background = RoundedView(context, config)
